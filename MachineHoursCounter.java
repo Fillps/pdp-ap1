@@ -35,9 +35,12 @@ public class MachineHoursCounter{
   public static class Reduce extends MapReduceBase implements Reducer<LongWritable, Text, LongWritable, Text>{
     
     private Text val = new Text();
+    final Long threeHundredDaysInSeconds = new Long(300*24*60*60);
 
     public void reduce(LongWritable key, Iterator<Text> values, OutputCollector<LongWritable, Text> output, Reporter reporter) throws IOException{
       Long sum = new Long(0);
+      Long times = new Long(0);
+      Long averageTime = new Long(0);
       Long traceStart = new Long(Long.MAX_VALUE);
       Long traceEnd = new Long(0);
       Long start = new Long(0);
@@ -56,9 +59,13 @@ public class MachineHoursCounter{
           traceEnd = end;
         }
         sum += (end-start);
+        ++times;
       }
-      val = new Text(Long.toString(sum));
-      output.collect(key, val);
+      if(sum > threeHundredDaysInSeconds){ // 300 days in seconds
+        averageTime = sum/times;
+        val = new Text(Long.toString(averageTime));
+        output.collect(key, val, traceStart, tracerEnd);
+      }
     }
   }
 
