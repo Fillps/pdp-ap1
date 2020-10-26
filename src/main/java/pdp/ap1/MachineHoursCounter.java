@@ -1,7 +1,7 @@
-package org.exec1;
+package pdp.ap1;
 
 import java.io.IOException;
-import java.io.iterator;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import org.apache.hadoop.fs.Path;
@@ -13,8 +13,8 @@ import org.apache.hadoop.mapred.*;
 
 import org.apache.hadoop.util.GenericOptionsParser;
 
-public class MachineHoursCounter{
-  public static class Map extends MapReduceBase implements Mapper<LongWritble, Text, LongWritable, Text>{
+public class MachineHoursCounter {
+  public static class Map extends MapReduceBase implements Mapper<LongWritable, Text, LongWritable, Text>{
     private LongWritable k = new LongWritable();
     private Text v = new Text();
 
@@ -25,7 +25,7 @@ public class MachineHoursCounter{
         if(tokens[2].equals("1")){
           k.set(machine);
           v.set(tokens[3] + ":" + tokens[4]);
-          output.collet(k, v);
+          output.collect(k, v);
         }
       }
     }
@@ -46,8 +46,8 @@ public class MachineHoursCounter{
       while (values.hasNext()){
         String line = values.next().toString();
         String[] tokens = line.split(":");
-        start = new Double(tokens[0].longValue());
-        end = new Double(tokens[1].longValue());
+        start = new Double(tokens[0]).longValue();
+        end = new Double(tokens[1]).longValue();
 
         if (start < traceStart){
           traceStart = start;
@@ -57,7 +57,7 @@ public class MachineHoursCounter{
         }
         sum += (end-start);
       }
-      val = new Text(Long.ToString(sum));
+      val = new Text(Long.toString(sum));
       output.collect(key, val);
     }
   }
@@ -69,7 +69,7 @@ public class MachineHoursCounter{
     JobConf conf = new JobConf(MachineHoursCounter.class);
     conf.setJobName("tempocount");
 
-    conf.setNumReduceTasks(integer.parseInt(args[2]));
+    conf.setNumReduceTasks(Integer.parseInt(args[2]));
 
     conf.setOutputKeyClass(LongWritable.class);
     conf.setOutputValueClass(Text.class);
@@ -83,7 +83,7 @@ public class MachineHoursCounter{
     FileInputFormat.setInputPaths(conf, new Path(args[0]));
     FileOutputFormat.setOutputPath(conf, new Path(args[1]));
     
-    jobClient.runjob(conf);
+    JobClient.runJob(conf);
   }
 }
 
