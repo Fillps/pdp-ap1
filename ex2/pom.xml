@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>pdp</groupId>
-    <artifactId>ap1-ex2</artifactId>
+    <artifactId>ap1</artifactId>
     <version>ex2</version>
     <packaging>jar</packaging>
 
