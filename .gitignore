@@ -1,7 +1,9 @@
 #
 # Standard Maven .gitignore
 #
-target/
+*.class
+*.properties
+*.lst
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
